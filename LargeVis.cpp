@@ -537,7 +537,7 @@ void LargeVis::test_accuracy()
 
 void LargeVis::test_accuracy2(int step)
 {
-    long long test_case = 10000;
+    long long test_case = 1000;
     std::priority_queue< pair<real, int> > *heap = new std::priority_queue< pair<real, int> >;
     long long hit_case = 0, i, j, y;
     for (i = step; i < step + test_case; ++i)
@@ -586,6 +586,7 @@ void LargeVis::construt_knn()
 {
 	cout << vec[0] << " " << vec[1] << " " << vec[2] << " " << endl;
 	normalize();
+	cout << vec[0] << " " << vec[1] << " " << vec[2] << " " << endl;
 	//push data to matrix(efanna)
 	Matrix<float> dataset(n_vertices, n_dim, vec);
 	//generate knn graph
@@ -601,7 +602,7 @@ void LargeVis::construt_knn()
 	index.getGraphResult(knn_vec);
 	test_accuracy();
     for (int step = 0; step < 10; step++) {
-        test_accuracy2(step * 10000);
+        test_accuracy2(step * 50000);
     }
 	index.testGsAccuracy(dataset, knn_k);
 

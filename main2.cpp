@@ -52,20 +52,21 @@ int main(int argc, char** argv){
 	if ((i = ArgPos((char *) "-S", argc, argv)) > 0) S = atoi(argv[i + 1]);
 	if ((i = ArgPos((char *) "-build_trees", argc, argv)) > 0) build_trees = atoi(argv[i + 1]);
 
+    n_neighbors = knn_k;
 
 
-	 strcpy(infile, "./data/twitter.200d.txt");
-	 strcpy(outfile, "./data/twitter.2d.txt");
+//	 strcpy(infile, "./data/twitter.200d.txt");
+//	 strcpy(outfile, "./data/twitter.2d.txt");
 
-//	strcpy(infile, "./data/sift_base.txt");
-//	strcpy(outfile, "./data/sift_base.2d.txt");
+	strcpy(infile, "./data/sift_base.txt");
+	strcpy(outfile, "./data/sift_base.2d.txt");
 
 //	strcpy(infile, "./data/mnist_vec784D.txt");
 //	strcpy(outfile, "./data/mnist_vec2D_2.txt");
 
 	LargeVis model;
 	model.load_from_file(infile);
-	model.run(out_dim, n_threads, n_samples, n_propagation, alpha, n_trees, n_negative, 10, n_gamma,
+	model.run(out_dim, n_threads, n_samples, n_propagation, alpha, n_trees, n_negative, n_neighbors, n_gamma,
 			  perplexity, knn_trees, mlevel, epochs, L, checkK, knn_k, S, build_trees);//n_neighbors
 	model.save(outfile);
 

@@ -1,1 +1,0 @@
-/usr/bin/c++    -g -std=c++11 -Ofast -march=native -ffast-math -fopenmp -g   CMakeFiles/Vis.dir/main2.cpp.o CMakeFiles/Vis.dir/LargeVis.cpp.o  -o Vis -lpthread -lgsl -lgslcblas /usr/local/lib/libboost_program_options.a 
