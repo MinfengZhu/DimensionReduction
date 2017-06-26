@@ -54,11 +54,11 @@ int main(int argc, char** argv){
 
 
 
-//	 strcpy(infile, "./data/twitter.200d.txt");
-//	 strcpy(outfile, "./data/twitter.2d.txt");
+	 strcpy(infile, "./data/twitter.200d.txt");
+	 strcpy(outfile, "./data/twitter.2d.txt");
 
-	strcpy(infile, "./data/sift_base.txt");
-	strcpy(outfile, "./data/sift_base.2d.txt");
+//	strcpy(infile, "./data/sift_base.txt");
+//	strcpy(outfile, "./data/sift_base.2d.txt");
 
 //	strcpy(infile, "./data/mnist_vec784D.txt");
 //	strcpy(outfile, "./data/mnist_vec2D_2.txt");
