@@ -83,7 +83,7 @@ public:
 	            }
 	        }
 	    }
-	    std::cout<< "Test knn graph accuracy: "<< hint * 100.0 / (testNum * kOfKNN) << std::endl;
+	    std::cout<< "Test efanna knn graph accuracy: "<< hint * 100.0 / (testNum * kOfKNN) << std::endl;
 	}
 
 private:
