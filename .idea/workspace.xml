@@ -11,15 +11,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bce8ea81-64ed-4bb5-92cb-c81b221cc2d0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Vis" afterPath="$PROJECT_DIR$/Vis" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CMakeLists.txt" afterPath="$PROJECT_DIR$/CMakeLists.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LargeVis.cpp" afterPath="$PROJECT_DIR$/LargeVis.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/algorithm/base_index.hpp" afterPath="$PROJECT_DIR$/algorithm/base_index.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/efanna.hpp" afterPath="$PROJECT_DIR$/efanna.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main2.cpp" afterPath="$PROJECT_DIR$/main2.cpp" />
-    </list>
+    <list default="true" id="bce8ea81-64ed-4bb5-92cb-c81b221cc2d0" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <ignored path="$PROJECT_DIR$/CMakeFiles/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -69,8 +61,8 @@
       <file leaf-file-name="LargeVis.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/LargeVis.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1135">
-              <caret line="687" column="46" lean-forward="true" selection-start-line="687" selection-start-column="46" selection-end-line="687" selection-end-column="46" />
+            <state relative-caret-position="610">
+              <caret line="671" column="32" lean-forward="false" selection-start-line="671" selection-start-column="25" selection-end-line="671" selection-end-column="32" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -460,15 +452,15 @@
       <workItem from="1498379260552" duration="737000" />
       <workItem from="1498445679362" duration="21053000" />
       <workItem from="1498487062889" duration="23250000" />
-      <workItem from="1499133727400" duration="2536000" />
+      <workItem from="1499133727400" duration="4355000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="114280000" />
+    <option name="totallyTimeSpent" value="116099000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="50" width="2560" height="1390" extended-state="6" />
+    <frame x="0" y="50" width="2560" height="1390" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14296874" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -885,8 +877,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/LargeVis.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1135">
-          <caret line="687" column="46" lean-forward="true" selection-start-line="687" selection-start-column="46" selection-end-line="687" selection-end-column="46" />
+        <state relative-caret-position="610">
+          <caret line="671" column="32" lean-forward="false" selection-start-line="671" selection-start-column="25" selection-end-line="671" selection-end-column="32" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
