@@ -66,7 +66,7 @@ void LargeVis::load_from_file(char *infile)
 	auto ret = fscanf(fin, "%lld%lld", &n_vertices, &n_dim);
 	//n_vertices=10000;
 	if (ret == EOF){
-		printf("Reading error"); 
+		printf("Reading error");
 		return;
 	}
 	vec = new real[n_vertices * n_dim];
@@ -76,7 +76,7 @@ void LargeVis::load_from_file(char *infile)
 		{
 			auto ret = fscanf(fin, "%f", &vec[i * n_dim + j]);
 			if (ret == EOF){
-				printf("Reading error"); 
+				printf("Reading error");
 				return;
 			}
 		}
@@ -537,7 +537,7 @@ void LargeVis::test_accuracy()
 
 void LargeVis::test_accuracy2(int step)
 {
-    long long test_case = 1000;
+    long long test_case = 100;
     std::priority_queue< pair<real, int> > *heap = new std::priority_queue< pair<real, int> >;
     long long hit_case = 0, i, j, y;
     for (i = step; i < step + test_case; ++i)
@@ -613,7 +613,7 @@ void LargeVis::init_neg_table()
 {
 	long long x, p, i;
 	neg_size = 1e8;
-    	reverse.clear(); vector<long long> (reverse).swap(reverse);
+    reverse.clear(); vector<long long> (reverse).swap(reverse);
 	real sum_weights = 0, dd, *weights = new real[n_vertices];
 	for (i = 0; i < n_vertices; ++i) weights[i] = 0;
 	for (x = 0; x < n_vertices; ++x)
@@ -624,8 +624,8 @@ void LargeVis::init_neg_table()
 		}
 		sum_weights += weights[x] = pow(weights[x], 0.75);
 	}
-    	next.clear(); vector<long long> (next).swap(next);
-    	delete[] head; head = NULL;
+    next.clear(); vector<long long> (next).swap(next);
+    delete[] head; head = NULL;
 	neg_table = new int[neg_size];
 	dd = weights[0];
 	for (i = x = 0; i < neg_size; ++i)
@@ -681,7 +681,7 @@ void LargeVis::visualize_thread(int id)
 				if (gg > grad_clip) gg = grad_clip;
 				if (gg < -grad_clip) gg = -grad_clip;
 				err[j] += gg * cur_alpha;
-			
+
 				gg = g * (vis[ly + j] - cur[j]);
 				if (gg > grad_clip) gg = grad_clip;
 				if (gg < -grad_clip) gg = -grad_clip;
@@ -705,6 +705,7 @@ void *LargeVis::visualize_thread_caller(void *arg)
 void LargeVis::visualize()
 {
 	long long i;
+    //init projection coordinate
 	vis = new real[n_vertices * out_dim];
 	for (i = 0; i < n_vertices * out_dim; ++i) vis[i] = (gsl_rng_uniform(gsl_r) - 0.5) / out_dim * 0.0001;
 	init_neg_table();
@@ -773,9 +774,9 @@ void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long lon
 		else n_trees = 100;
 	}
 	if (vec) { clean_graph(); construt_knn(); }
-//    clock_t s, f;
-//    s = clock();
-//	visualize();
-//    f = clock();
-//    cout << "Visualize time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+    clock_t s, f;
+    s = clock();
+	visualize();
+    f = clock();
+    cout << "Visualize time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
 }
