@@ -13,6 +13,8 @@ Makefile
 *.exe
 *.o
 *.so
+*.cbp
+*.out
 
 # OS generated files #
 ######################

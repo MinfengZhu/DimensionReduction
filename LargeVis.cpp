@@ -160,6 +160,23 @@ void LargeVis::save(char *outfile)
 	fclose(fout);
 }
 
+void LargeVis::save_gpu(char *outfile)
+{
+	FILE *fout = fopen(outfile, "wb");
+	fprintf(fout, "%lld %lld\n", n_vertices, out_dim);
+	for (long long i = 0; i < n_vertices; ++i)
+	{
+		if (names.size()) fprintf(fout, "%s ", names[i].c_str());
+		for (long long j = 0; j < out_dim; ++j)
+		{
+			if (j) fprintf(fout, " ");
+			fprintf(fout, "%.10f", vis_d[i * out_dim + j]);
+		}
+		fprintf(fout, "\n");
+	}
+	fclose(fout);
+}
+
 real *LargeVis::get_ans()
 {
 	return vis;
@@ -511,7 +528,7 @@ void LargeVis::compute_similarity()
 
 void LargeVis::test_accuracy()
 {
-	long long test_case = 1000;
+	long long test_case = 100;
 	std::priority_queue< pair<real, int> > *heap = new std::priority_queue< pair<real, int> >;
 	long long hit_case = 0, i, j, x, y;
 	for (i = 0; i < test_case; ++i)
@@ -601,10 +618,11 @@ void LargeVis::construt_knn()
 	knn_vec = new std::vector<int>[n_vertices];
 	index.getGraphResult(knn_vec);
 	test_accuracy();
-    for (int step = 0; step < 10; step++) {
-        test_accuracy2(step * 50000);
-    }
-	index.testGsAccuracy(dataset, knn_k);
+    index.testGsAccuracy(dataset, knn_k);
+//    for (int step = 0; step < 10; step++) {
+//        test_accuracy2(step * 50000);
+//    }
+
 
 	compute_similarity();
 }
@@ -711,11 +729,12 @@ void LargeVis::visualize()
 	init_neg_table();
 	init_alias_table();
 	edge_count_actual = 0;
-	pthread_t *pt = new pthread_t[n_threads];
-	for (int j = 0; j < n_threads; ++j) pthread_create(&pt[j], NULL, LargeVis::visualize_thread_caller, new arg_struct(this, j));
-	for (int j = 0; j < n_threads; ++j) pthread_join(pt[j], NULL);
-	delete[] pt;
+//	pthread_t *pt = new pthread_t[n_threads];
+//	for (int j = 0; j < n_threads; ++j) pthread_create(&pt[j], NULL, LargeVis::visualize_thread_caller, new arg_struct(this, j));
+//	for (int j = 0; j < n_threads; ++j) pthread_join(pt[j], NULL);
+//	delete[] pt;
 	printf("\n");
+    visualize_gpu();
 }
 
 void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long long n_prop, real alph, long long n_tree, long long n_nega, long long n_neig, real gamm, real perp,
@@ -753,6 +772,7 @@ void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long lon
 	S = knn_S < 0 ? 10 : knn_S;
 	build_trees = build_tre < 0 ? 8 : build_tre;
 
+    n_neighbors = knn_k;
 
 	if (n_samples < 0)
 	{
@@ -779,4 +799,23 @@ void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long lon
 	visualize();
     f = clock();
     cout << "Visualize time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+}
+void LargeVis::visualize_gpu(){
+    double* prob_d = new double[n_edge];
+    for(int i =0; i<n_edge;i++){
+        prob_d[i]= prob[i];
+    }
+    vis_d = new double[n_vertices * out_dim];
+    for (int i = 0; i < n_vertices * out_dim; ++i) vis_d[i] = (double)(gsl_rng_uniform(gsl_r) - 0.5) / out_dim * 0.0001;
+    double initial_alpha_d = (double)initial_alpha;
+	int* edge_from_gpu = new int[edge_from.size()];
+	int* edge_to_gpu = new int[edge_to.size()];
+	for (int i = 0; i < edge_from.size(); ++i){
+		edge_from_gpu[i]=edge_from[i];
+		edge_to_gpu[i]=edge_to[i];
+	}
+	int edge_ft_size = edge_from.size();
+//	int *neg_table;
+//	long long neg_size;
+    show(&initial_alpha_d, &out_dim, &n_edge, prob_d, alias, vis_d, &n_vertices, &n_samples, edge_from_gpu, edge_to_gpu, edge_ft_size, n_negatives,neg_table, neg_size);
 }

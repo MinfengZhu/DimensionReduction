@@ -75,10 +75,10 @@ public:
 	    int testNum = 100;
 	    int hint = 0;
 	    for(int i = 0; i < testNum; i++){
-	        std::vector<std::pair<float, size_t>> res = dataset.brute_force_search(i*5000,kOfKNN + 1,new L2DistanceAVX<float>());
-	        for(int j = 0; j < getGraphRow(i*5000).size(); j++){
+	        std::vector<std::pair<float, size_t>> res = dataset.brute_force_search(i*dataset.get_rows()/testNum,kOfKNN + 1,new L2DistanceAVX<float>());
+	        for(int j = 0; j < getGraphRow(i*dataset.get_rows()/testNum).size(); j++){
 	            for(int k = 1; k < kOfKNN + 1; k++){
-	                if(res[k].second == getGraphRow(i*5000)[j])
+	                if(res[k].second == getGraphRow(i*dataset.get_rows()/testNum)[j])
 	                	hint++;
 	            }
 	        }

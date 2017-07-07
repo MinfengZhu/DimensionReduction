@@ -8,6 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Ofast -march=native -ffast-m
 #                         CLION_EXE_DIR=${PROJECT_BINARY_DIR})
 
 include_directories("${PROJECT_SOURCE_DIR}/general")
+list(APPEND CUDA_NVCC_FLAGS "-arch=sm_20;-std=c++11;-DVERBOSE")
 
 # 3rd party
 ###############################################################################
@@ -18,10 +19,14 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost REQUIRED COMPONENTS program_options)
 include_directories(${Boost_INCLUDE_DIRS})
 ###############################################################################
+# cuda
+find_package(CUDA)
+set(CUDA_PROPAGATE_HOST_FLAGS OFF)
 
 
 ###############################################################################
-add_executable(Vis main2.cpp LargeVis.cpp)
+cuda_add_executable(Vis main2.cpp LargeVis.cpp hellocuda.h hellocuda.cu)
+#add_executable(Vis main2.cpp LargeVis.cpp)
 target_link_libraries(Vis pthread gsl gslcblas ${Boost_LIBRARIES})
 ###############################################################################
 #

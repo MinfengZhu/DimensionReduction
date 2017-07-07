@@ -15,6 +15,9 @@
 
 #include "efanna.hpp"
 
+#include "hellocuda.h"
+
+
 using namespace std;
 using namespace efanna;
 
@@ -46,6 +49,7 @@ private:
 	real *prob;
 	static const gsl_rng_type * gsl_T;
 	static gsl_rng * gsl_r;
+    double *vis_d;
 
 	void clean_model();
 	void clean_data();
@@ -78,11 +82,13 @@ public:
 	void load_from_graph(char *infile);
 	void load_from_data(real *data, long long n_vert, long long n_di);
 	void save(char *outfile);
+    void save_gpu(char *outfile);
 	void run(long long out_d = -1, long long n_thre = -1, long long n_samp = -1, long long n_prop = -1, real alph = -1, long long n_tree = -1, long long n_nega = -1, long long n_neig = -1, real gamm = -1, real perp = -1,
               int knn_tre = -1, int mle = -1,  int epo = -1, int knn_L = -1, int che = -1, int k = -1, int knn_S = -1, int build_tre = -1);
 	real *get_ans();
 	long long get_n_vertices();
 	long long get_out_dim();
+	void visualize_gpu();
 };
 
 #endif
