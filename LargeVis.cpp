@@ -618,7 +618,7 @@ void LargeVis::construt_knn()
 	knn_vec = new std::vector<int>[n_vertices];
 	index.getGraphResult(knn_vec);
 	test_accuracy();
-    index.testGsAccuracy(dataset, knn_k);
+    //index.testGsAccuracy(dataset, knn_k);
 //    for (int step = 0; step < 10; step++) {
 //        test_accuracy2(step * 50000);
 //    }
