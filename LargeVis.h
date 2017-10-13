@@ -26,11 +26,22 @@ struct arg_struct{
 	arg_struct(void *x, int y) :ptr(x), id(y){}
 };
 
+class RawData{
+private:
+	long long n_vertices, n_dim;
+	float *vec;
+
+	void clean_data();
+public:
+	RawData();
+	float* load_from_file(char *infile);
+};
+
 class LargeVis{
 private:
 	long long n_vertices, n_dim, out_dim, n_samples, n_threads, n_negatives, n_neighbors, n_trees, n_propagations, edge_count_actual;
 	real initial_alpha, gamma, perplexity;
-	real *vec, *vis;
+	
 	std::vector<string> names;
 	std::vector<int> *knn_vec, *old_knn_vec;
 	AnnoyIndex<int, real, Euclidean, Kiss64Random> *annoy_index;
@@ -44,6 +55,8 @@ private:
 	real *prob;
 	static const gsl_rng_type * gsl_T;
 	static gsl_rng * gsl_r;
+
+	bool init_knn;
 
 	void clean_model();
 	void clean_data();
@@ -64,18 +77,19 @@ private:
 	static void *compute_similarity_thread_caller(void *arg);
 	void search_reverse_thread(int id);
 	static void *search_reverse_thread_caller(void *arg);
-	void construt_knn();
+	void construt_knn(bool init_knn);
 	void init_neg_table();
 	void visualize_thread(int id);
 	static void *visualize_thread_caller(void *arg);
 	void visualize();
 public:
+	float *vec, *vis;
+
 	LargeVis();
-	void load_from_file(char *infile);
 	void load_from_graph(char *infile);
 	void load_from_data(real *data, long long n_vert, long long n_di);
 	void save(char *outfile);
-	void run(long long out_d = -1, long long n_thre = -1, long long n_samp = -1, long long n_prop = -1, real alph = -1, long long n_tree = -1, long long n_nega = -1, long long n_neig = -1, real gamm = -1, real perp = -1);
+	void run(long long out_d = -1, long long n_thre = -1, long long n_samp = -1, long long n_prop = -1, real alph = -1, long long n_tree = -1, long long n_nega = -1, long long n_neig = -1, real gamm = -1, real perp = -1, bool init_knn = true);
 	real *get_ans();
 	long long get_n_vertices();
 	long long get_out_dim();

@@ -8,6 +8,53 @@
 #include <malloc.h>
 
 
+//Transfer data
+RawData::RawData()
+{
+	vec = NULL;
+}
+
+void RawData::clean_data()
+{
+	if (vec) { delete[] vec; vec = NULL; }
+	
+}
+
+float* RawData::load_from_file(char *infile)
+{
+	clean_data();
+	FILE *fin = fopen(infile, "rb");
+	if (fin == NULL)
+	{
+		printf("\nFile not found!\n");
+		return 0;
+	}
+    printf("Reading input file %s ......", infile); fflush(stdout);
+	auto ret = fscanf(fin, "%lld%lld", &n_vertices, &n_dim);
+	//n_vertices=10000;
+	if (ret == EOF){
+		printf("Reading error");
+		return 0;
+	}
+	vec = new float[n_vertices * n_dim];
+	for (long long i = 0; i < n_vertices; ++i)
+	{
+		for (long long j = 0; j < n_dim; ++j)
+		{
+			auto ret = fscanf(fin, "%f", &vec[i * n_dim + j]);
+			if (ret == EOF){
+				printf("Reading error"); 
+				return 0;
+			}
+		}
+	}
+	fclose(fin);
+	printf(" Done.\n");
+	printf("Total vertices : %lld\tDimension : %lld\n", n_vertices, n_dim);
+	return vec;
+}
+
+//LargeVis
 LargeVis::LargeVis()
 {
 	vec = vis = prob = NULL;
@@ -51,39 +98,6 @@ void LargeVis::clean_data()
 {
 	if (vec) { delete[] vec; vec = NULL; }
 	clean_graph();
-}
-
-void LargeVis::load_from_file(char *infile)
-{
-	clean_data();
-	FILE *fin = fopen(infile, "rb");
-	if (fin == NULL)
-	{
-		printf("\nFile not found!\n");
-		return;
-	}
-    printf("Reading input file %s ......", infile); fflush(stdout);
-	auto ret = fscanf(fin, "%lld%lld", &n_vertices, &n_dim);
-	//n_vertices=10000;
-	if (ret == EOF){
-		printf("Reading error"); 
-		return;
-	}
-	vec = new real[n_vertices * n_dim];
-	for (long long i = 0; i < n_vertices; ++i)
-	{
-		for (long long j = 0; j < n_dim; ++j)
-		{
-			auto ret = fscanf(fin, "%f", &vec[i * n_dim + j]);
-			if (ret == EOF){
-				printf("Reading error"); 
-				return;
-			}
-		}
-	}
-	fclose(fin);
-	printf(" Done.\n");
-	printf("Total vertices : %lld\tDimension : %lld\n", n_vertices, n_dim);
 }
 
 void LargeVis::load_from_data(real *data, long long n_vert, long long n_di)
@@ -177,7 +191,8 @@ long long LargeVis::get_out_dim()
 
 void LargeVis::normalize()
 {
-    	printf("Normalizing ......"); fflush(stdout);
+    printf("Normalizing ......");
+    fflush(stdout);
 	real *mean = new real[n_dim];
 	for (long long i = 0; i < n_dim; ++i) mean[i] = 0;
 	for (long long i = 0, ll = 0; i < n_vertices; ++i, ll += n_dim)
@@ -554,7 +569,7 @@ void load_data(char* filename, float*& data, size_t& num,int& dim){
   }
   in.close();
 }
-void LargeVis::construt_knn()
+void LargeVis::construt_knn(bool init_knn)
 {
 	// auto start = std::chrono::system_clock::now();
 	//clock_t s,f;
@@ -569,45 +584,51 @@ void LargeVis::construt_knn()
 	// auto end = std::chrono::system_clock::now();
 	// std::chrono::duration<double> diff = end-start;
 	// std::cout << "Time to fill and iterate a vector of "  << " ints : " << diff.count() << " s\n";
-	
-	size_t points_num;
-  	int dim;
-	float* data_load = NULL;
-	char file[1000];
-	strcpy(file, "./data/sift_base.fvecs");
-	load_data(file, data_load, points_num,dim);
-	Matrix<float> dataset(points_num,dim,data_load);
-	unsigned int trees = 20;
-  	int mlevel = 8;
-  	unsigned int epochs = 8;
-  	int L = 200;
-  	int checkK = 100;
-  	int kNN_build_graph = 10;
- 	int S = 10;
-	FIndex<float> index(dataset, new L2DistanceAVX<float>(), efanna::KDTreeUbIndexParams(true, 8/*trees*/ ,8/*mlevel*/ ,8/*epochs*/,25/*checkK*/,30/*L*/, kNN_build_graph,8/*trees_build*/, S));
+	if(init_knn)
+	{
+		size_t points_num;
+	  	int dim;
+		float* data_load = NULL;
+		char file[1000];
+		strcpy(file, "./data/sift_base.fvecs");
+		load_data(file, data_load, points_num,dim);
+		Matrix<float> dataset(points_num,dim,data_load);
+		unsigned int trees = 20;
+	  	int mlevel = 8;
+	  	unsigned int epochs = 8;
+	  	int L = 200;
+	  	int checkK = 100;
+	  	int kNN_build_graph = 10;
+	 	int S = 10;
+		FIndex<float> index(dataset, new L2DistanceAVX<float>(), efanna::KDTreeUbIndexParams(true, 8/*trees*/ ,8/*mlevel*/ ,8/*epochs*/,25/*checkK*/,30/*L*/, kNN_build_graph,8/*trees_build*/, S));
 
-	clock_t s,f;
-	s = clock();
-	index.buildIndex();
-	f = clock();
-	cout<<"Index building time : "<<(f-s)*1.0/CLOCKS_PER_SEC<<" seconds"<<endl;
-	
-	knn_vec = new std::vector<int>[n_vertices];
-	index.getGraphResult(knn_vec);
-	test_accuracy();
-	index.testGsAccuracy(dataset, 10);
-	
-	index.setSearchParams(4, 1200, 200, 16, 0);
-	cout<<"knn search s"<<endl;
-	index.knnSearch(10/*query nn*/,dataset);
-	cout<<"knn search e"<<endl;
-	
-	knn_vec = new std::vector<int>[n_vertices];
-	index.getResult(knn_vec, n_vertices);
-	f = clock();
-	cout<<"knn compute time:"<<(f-s) * 1.0 / CLOCKS_PER_SEC <<" seconds"<<endl;
-	cout<<dataset.get_row(0)[0]<<" "<<dataset.get_row(0)[1]<<" "<<endl;
-	
+		clock_t s,f;
+		s = clock();
+		index.buildIndex();
+		f = clock();
+		cout<<"Index building time : "<<(f-s)*1.0/CLOCKS_PER_SEC<<" seconds"<<endl;
+		
+		knn_vec = new std::vector<int>[n_vertices];
+		index.getGraphResult(knn_vec);
+		test_accuracy();
+		index.testGsAccuracy(dataset, 10);
+		
+		index.setSearchParams(4, 1200, 200, 16, 0);
+		cout<<"knn search s"<<endl;
+		index.knnSearch(10/*query nn*/,dataset);
+		cout<<"knn search e"<<endl;
+		
+		knn_vec = new std::vector<int>[n_vertices];
+		index.getResult(knn_vec, n_vertices);
+		f = clock();
+		cout<<"knn compute time:"<<(f-s) * 1.0 / CLOCKS_PER_SEC <<" seconds"<<endl;
+		cout<<dataset.get_row(0)[0]<<" "<<dataset.get_row(0)[1]<<" "<<endl;
+	}
+	else
+	{
+		run_annoy();
+		run_propagation();
+	}
 
 	test_accuracy();
 	compute_similarity();
@@ -731,7 +752,7 @@ void LargeVis::visualize()
 	printf("\n");
 }
 
-void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long long n_prop, real alph, long long n_tree, long long n_nega, long long n_neig, real gamm, real perp)
+void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long long n_prop, real alph, long long n_tree, long long n_nega, long long n_neig, real gamm, real perp, bool init_knn)
 {
 	gsl_rng_env_setup();
 	gsl_T = gsl_rng_rand48;
@@ -773,6 +794,6 @@ void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long lon
 			n_trees = 50;
 		else n_trees = 100;
 	}
-	if (vec) { clean_graph(); construt_knn(); }
+	if (vec) { clean_graph(); construt_knn(init_knn); }
 	visualize();
 }
