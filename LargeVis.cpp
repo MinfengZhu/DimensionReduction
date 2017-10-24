@@ -7,53 +7,6 @@
 #include <fstream>
 #include <malloc.h>
 
-
-//Transfer data
-RawData::RawData()
-{
-	vec = NULL;
-}
-
-void RawData::clean_data()
-{
-	if (vec) { delete[] vec; vec = NULL; }
-	
-}
-
-float* RawData::load_from_file(char *infile)
-{
-	clean_data();
-	FILE *fin = fopen(infile, "rb");
-	if (fin == NULL)
-	{
-		printf("\nFile not found!\n");
-		return 0;
-	}
-    printf("Reading input file %s ......", infile); fflush(stdout);
-	auto ret = fscanf(fin, "%lld%lld", &n_vertices, &n_dim);
-	//n_vertices=10000;
-	if (ret == EOF){
-		printf("Reading error");
-		return 0;
-	}
-	vec = new float[n_vertices * n_dim];
-	for (long long i = 0; i < n_vertices; ++i)
-	{
-		for (long long j = 0; j < n_dim; ++j)
-		{
-			auto ret = fscanf(fin, "%f", &vec[i * n_dim + j]);
-			if (ret == EOF){
-				printf("Reading error"); 
-				return 0;
-			}
-		}
-	}
-	fclose(fin);
-	printf(" Done.\n");
-	printf("Total vertices : %lld\tDimension : %lld\n", n_vertices, n_dim);
-	return vec;
-}
-
 //LargeVis
 LargeVis::LargeVis()
 {
@@ -191,8 +144,7 @@ long long LargeVis::get_out_dim()
 
 void LargeVis::normalize()
 {
-    printf("Normalizing ......");
-    fflush(stdout);
+    printf("Normalizing ......"); fflush(stdout);
 	real *mean = new real[n_dim];
 	for (long long i = 0; i < n_dim; ++i) mean[i] = 0;
 	for (long long i = 0, ll = 0; i < n_vertices; ++i, ll += n_dim)
@@ -526,7 +478,7 @@ void LargeVis::compute_similarity()
 
 void LargeVis::test_accuracy()
 {
-	long long test_case = 100;
+	long long test_case = 1000;
 	std::priority_queue< pair<real, int> > *heap = new std::priority_queue< pair<real, int> >;
 	long long hit_case = 0, i, j, x, y;
 	for (i = 0; i < test_case; ++i)
@@ -546,13 +498,40 @@ void LargeVis::test_accuracy()
 		}
 	}
     	delete heap;
-	printf("Test knn accuracy : %.2f%%\n", hit_case * 100.0 / (test_case * n_neighbors));
+        heap = NULL;
+	printf("Test efanna knn accuracy(use largevis test) : %.2f%%\n", hit_case * 100.0 / (test_case * n_neighbors));
+}
+
+void LargeVis::test_accuracy2(int step)
+{
+    long long test_case = 100;
+    std::priority_queue< pair<real, int> > *heap = new std::priority_queue< pair<real, int> >;
+    long long hit_case = 0, i, j, y;
+    for (i = step; i < step + test_case; ++i)
+    {
+        for (y = 0; y < n_vertices; ++y) if (i != y)
+            {
+                heap->push(std::make_pair(CalcDist(i, y), y));
+                if (heap->size() == n_neighbors + 1) heap->pop();
+            }
+        while (!heap->empty())
+        {
+            y = heap->top().second;
+            heap->pop();
+            for (j = 0; j < knn_vec[i].size(); ++j) if (knn_vec[i][j] == y)
+                    ++hit_case;
+        }
+    }
+    delete heap;
+    heap = NULL;
+    printf("Test efanna knn accuracy2(use largevis test2) %d step : %.2f%%\n", step, hit_case * 100.0 / (test_case * n_neighbors));
 }
 void load_data(char* filename, float*& data, size_t& num,int& dim){
   ifstream in(filename, ios::binary);
   if(!in.is_open()){cout<<"open file error"<<endl;exit(-1);}
   in.read((char*)&dim,4);
   cout<<"data dimension: "<<dim<<endl;
+    //读指针   seekg & tellg可以读出文件的大小为多少byte
   in.seekg(0,ios::end);
   ios::pos_type ss = in.tellg();
   size_t fsize = (size_t)ss;
@@ -569,86 +548,50 @@ void load_data(char* filename, float*& data, size_t& num,int& dim){
   }
   in.close();
 }
+
 void LargeVis::construt_knn(bool init_knn)
 {
-	// auto start = std::chrono::system_clock::now();
-	//clock_t s,f;
-	//s = clock();
-	cout<<vec[0]<<" "<<vec[1]<<" "<<vec[2]<<" "<<endl;
-	normalize();
-	// run_annoy();
-	// run_propagation();
-
-	// f = clock();
-	// printf("%fseconds\n",(f-s)*1.0/CLOCKS_PER_SEC);
-	// auto end = std::chrono::system_clock::now();
-	// std::chrono::duration<double> diff = end-start;
-	// std::cout << "Time to fill and iterate a vector of "  << " ints : " << diff.count() << " s\n";
 	if(init_knn)
 	{
-		size_t points_num;
-	  	int dim;
-		float* data_load = NULL;
-		char file[1000];
-		strcpy(file, "./data/sift_base.fvecs");
-		load_data(file, data_load, points_num,dim);
-		Matrix<float> dataset(points_num,dim,data_load);
-		unsigned int trees = 20;
-	  	int mlevel = 8;
-	  	unsigned int epochs = 8;
-	  	int L = 200;
-	  	int checkK = 100;
-	  	int kNN_build_graph = 10;
-	 	int S = 10;
-		FIndex<float> index(dataset, new L2DistanceAVX<float>(), efanna::KDTreeUbIndexParams(true, 8/*trees*/ ,8/*mlevel*/ ,8/*epochs*/,25/*checkK*/,30/*L*/, kNN_build_graph,8/*trees_build*/, S));
-
-		clock_t s,f;
-		s = clock();
+		//cout << vec[0] << " " << vec[1] << " " << vec[2] << " " << endl;
+		normalize();
+		//cout << vec[0] << " " << vec[1] << " " << vec[2] << " " << endl;
+		//push data to matrix(efanna)
+		Matrix<float> dataset(n_vertices, n_dim, vec);
+		//generate knn graph
+		FIndex<float> index(dataset, new L2DistanceAVX<float>(), efanna::KDTreeUbIndexParams(true, knn_trees, mlevel, epochs, checkK, L, knn_k, build_trees, S));
+		clock_t s, f;
+		s = clock();//start time
 		index.buildIndex();
-		f = clock();
-		cout<<"Index building time : "<<(f-s)*1.0/CLOCKS_PER_SEC<<" seconds"<<endl;
-		
+		f = clock();//end time
+		cout << "Efanna KNN building time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+
 		knn_vec = new std::vector<int>[n_vertices];
 		index.getGraphResult(knn_vec);
 		test_accuracy();
-		index.testGsAccuracy(dataset, 10);
-		
-		index.setSearchParams(4, 1200, 200, 16, 0);
-		cout<<"knn search s"<<endl;
-		index.knnSearch(10/*query nn*/,dataset);
-		cout<<"knn search e"<<endl;
-		
-		knn_vec = new std::vector<int>[n_vertices];
-		index.getResult(knn_vec, n_vertices);
-		f = clock();
-		cout<<"knn compute time:"<<(f-s) * 1.0 / CLOCKS_PER_SEC <<" seconds"<<endl;
-		cout<<dataset.get_row(0)[0]<<" "<<dataset.get_row(0)[1]<<" "<<endl;
+	    //for (int step = 0; step < 10; step++) {
+	    //    test_accuracy2(step * 50000);
+	    //}
+	    //index.testGsAccuracy(dataset, knn_k);
+
+	    printf("start computing similarity\n");
+	    compute_similarity();
 	}
 	else
 	{
+		normalize();
 		run_annoy();
 		run_propagation();
+		test_accuracy();
+		compute_similarity();
 	}
-
-	test_accuracy();
-	compute_similarity();
-
-	/*FILE *fout = fopen("knn_graph.txt", "wb");
-	for (long long p = 0; p < n_edge; ++p)
-	{
-		fprintf(fout, "%lld %lld ", edge_from[p], edge_to[p]);
-		double tmp = edge_weight[p];
-		fwrite(&tmp, sizeof(double), 1, fout);
-		fprintf(fout, "\n");
-	}
-	fclose(fout);*/
 }
 
 void LargeVis::init_neg_table()
 {
 	long long x, p, i;
 	neg_size = 1e8;
-    	reverse.clear(); vector<long long> (reverse).swap(reverse);
+    reverse.clear(); vector<long long> (reverse).swap(reverse);
 	real sum_weights = 0, dd, *weights = new real[n_vertices];
 	for (i = 0; i < n_vertices; ++i) weights[i] = 0;
 	for (x = 0; x < n_vertices; ++x)
@@ -659,8 +602,8 @@ void LargeVis::init_neg_table()
 		}
 		sum_weights += weights[x] = pow(weights[x], 0.75);
 	}
-    	next.clear(); vector<long long> (next).swap(next);
-    	delete[] head; head = NULL;
+    next.clear(); vector<long long> (next).swap(next);
+    delete[] head; head = NULL;
 	neg_table = new int[neg_size];
 	dd = weights[0];
 	for (i = x = 0; i < neg_size; ++i)
@@ -716,7 +659,7 @@ void LargeVis::visualize_thread(int id)
 				if (gg > grad_clip) gg = grad_clip;
 				if (gg < -grad_clip) gg = -grad_clip;
 				err[j] += gg * cur_alpha;
-			
+
 				gg = g * (vis[ly + j] - cur[j]);
 				if (gg > grad_clip) gg = grad_clip;
 				if (gg < -grad_clip) gg = -grad_clip;
@@ -740,6 +683,7 @@ void *LargeVis::visualize_thread_caller(void *arg)
 void LargeVis::visualize()
 {
 	long long i;
+    //init projection coordinate
 	vis = new real[n_vertices * out_dim];
 	for (i = 0; i < n_vertices * out_dim; ++i) vis[i] = (gsl_rng_uniform(gsl_r) - 0.5) / out_dim * 0.0001;
 	init_neg_table();
@@ -752,7 +696,8 @@ void LargeVis::visualize()
 	printf("\n");
 }
 
-void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long long n_prop, real alph, long long n_tree, long long n_nega, long long n_neig, real gamm, real perp, bool init_knn)
+void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long long n_prop, real alph, long long n_tree, long long n_nega, long long n_neig, real gamm, real perp,
+				    int knn_tre, int mle,  int epo, int knn_L, int che, int k, int knn_S, int build_tre, bool init_knn)
 {
 	gsl_rng_env_setup();
 	gsl_T = gsl_rng_rand48;
@@ -775,6 +720,18 @@ void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long lon
 	n_propagations = n_prop < 0 ? 3 : n_prop;
 	gamma = gamm < 0 ? 7.0 : gamm;
 	perplexity = perp < 0 ? 50.0 : perp;
+
+	// knn图生成参数
+	knn_trees = knn_tre < 0 ? 8 : knn_tre;
+	mlevel = mle < 0 ? 8 : mle;
+	epochs = epo < 0 ? 8 : epo;
+	L = knn_L < 0 ? 30 : knn_L;
+	checkK = che < 0 ? 25 : che;
+	knn_k = k < 0 ? 10 : k;
+	S = knn_S < 0 ? 10 : knn_S;
+	build_trees = build_tre < 0 ? 8 : build_tre;
+
+
 	if (n_samples < 0)
 	{
 		if (n_vertices < 10000)
@@ -786,14 +743,18 @@ void LargeVis::run(long long out_d, long long n_thre, long long n_samp, long lon
 	n_samples *= 1000000;
 	if (n_trees < 0)
 	{
-		if (n_vertices < 100000)
-			n_trees = 10;
-		else if (n_vertices < 1000000)
-			n_trees = 20;
-		else if (n_vertices < 5000000)
-			n_trees = 50;
-		else n_trees = 100;
-	}
-	if (vec) { clean_graph(); construt_knn(init_knn); }
-	visualize();
+        if (n_vertices < 100000)
+        	n_trees = 10;
+        else if (n_vertices < 1000000)
+        	n_trees = 20;
+        else if (n_vertices < 5000000)
+        	n_trees = 50;
+        else n_trees = 100;
+    }
+    if (vec) { clean_graph(); construt_knn(init_knn); }
+    clock_t s, f;
+    s = clock();
+    visualize();
+    f = clock();
+    cout << "Visualize time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
 }

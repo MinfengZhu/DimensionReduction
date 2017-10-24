@@ -26,22 +26,12 @@ struct arg_struct{
 	arg_struct(void *x, int y) :ptr(x), id(y){}
 };
 
-class RawData{
-private:
-	long long n_vertices, n_dim;
-	float *vec;
-
-	void clean_data();
-public:
-	RawData();
-	float* load_from_file(char *infile);
-};
-
 class LargeVis{
 private:
-	long long n_vertices, n_dim, out_dim, n_samples, n_threads, n_negatives, n_neighbors, n_trees, n_propagations, edge_count_actual;
+	long long out_dim, n_samples, n_threads, n_negatives, n_neighbors, n_trees, n_propagations, edge_count_actual;
+    int knn_trees, epochs;
+    int mlevel, L, checkK, knn_k, S, build_trees;
 	real initial_alpha, gamma, perplexity;
-	
 	std::vector<string> names;
 	std::vector<int> *knn_vec, *old_knn_vec;
 	AnnoyIndex<int, real, Euclidean, Kiss64Random> *annoy_index;
@@ -72,6 +62,7 @@ private:
 	void propagation_thread(int id);
 	static void *propagation_thread_caller(void *arg);
 	void test_accuracy();
+    void test_accuracy2(int step);
 	void compute_similarity();
 	void compute_similarity_thread(int id);
 	static void *compute_similarity_thread_caller(void *arg);
@@ -83,13 +74,15 @@ private:
 	static void *visualize_thread_caller(void *arg);
 	void visualize();
 public:
-	float *vec, *vis;
+	real *vec, *vis;
+	long long n_vertices, n_dim;
 
 	LargeVis();
 	void load_from_graph(char *infile);
 	void load_from_data(real *data, long long n_vert, long long n_di);
 	void save(char *outfile);
-	void run(long long out_d = -1, long long n_thre = -1, long long n_samp = -1, long long n_prop = -1, real alph = -1, long long n_tree = -1, long long n_nega = -1, long long n_neig = -1, real gamm = -1, real perp = -1, bool init_knn = true);
+	void run(long long out_d = -1, long long n_thre = -1, long long n_samp = -1, long long n_prop = -1, real alph = -1, long long n_tree = -1, long long n_nega = -1, long long n_neig = -1, real gamm = -1, real perp = -1,
+              int knn_tre = -1, int mle = -1,  int epo = -1, int knn_L = -1, int che = -1, int k = -1, int knn_S = -1, int build_tre = -1, bool init_knn = true);
 	real *get_ans();
 	long long get_n_vertices();
 	long long get_out_dim();
