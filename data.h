@@ -18,7 +18,10 @@ public:
 	real *vec;
 	long long n_vertices, n_dim;
 	data();
-	real* load_from_file(char *infile,long long &n_vertices, long long &n_dim);
+	real* load_from_file(char *infile);
+    long long get_vertice_number();
+    long long get_dim_number();
+    void show_data_info();
 };
 
 #endif

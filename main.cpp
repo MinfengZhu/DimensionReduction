@@ -58,7 +58,7 @@ int main(int argc, char** argv){
 	{
 		if(atoi(argv[i + 1]) == 0)
 			init_knn = false;
-		else 
+		else
 			init_knn = true;
 	}
 
@@ -75,11 +75,11 @@ int main(int argc, char** argv){
 	strcpy(outfile, "./data/mnist_vec2D_2.txt");
 
 	LargeVis model;
-	data transfdata;
+	data data_module;
 
-	model.vec = transfdata.load_from_file(infile, n_vertices, n_dim);
-	model.n_vertices = n_vertices;
-	model.n_dim = n_dim;
+	model.vec = data_module.load_from_file(infile);
+	model.n_vertices = data_module.get_vertice_number();
+	model.n_dim = data_module.get_dim_number();
 
 	// cout << model.vec[100] << endl << model.n_dim << endl << model.n_vertices << endl;
 
@@ -87,7 +87,5 @@ int main(int argc, char** argv){
 			  perplexity, knn_trees, mlevel, epochs, L, checkK, knn_k, S, build_trees, init_knn);//n_neighbors
 	model.save(outfile);
 
-	//index.saveGraph(argv[2]);
-	//index.saveTrees(argv[3]);
 	return 0;
 }
