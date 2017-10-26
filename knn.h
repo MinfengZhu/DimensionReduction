@@ -1,5 +1,5 @@
-#ifndef DATA_H
-#define DATA_H
+#ifndef KNN_H
+#define KNN_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,17 +11,16 @@ using namespace std;
 
 typedef float real;
 
-class data{
+class knn{
 private:
-	real *vec;
-	long long n_vertices, n_dim;
 	void clean_data();
 public:
-	data();
+	real *vec;
+	long long n_vertices, n_dim;
+	knn();
 	real* load_from_file(char *infile);
     long long get_vertice_number();
-	long long get_dim_number();
-	real* getVec();
+    long long get_dim_number();
     void show_data_info();
 };
 

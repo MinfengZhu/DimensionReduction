@@ -10,11 +10,13 @@
 using namespace efanna;
 using namespace std;
 
+float *vec;
 char infile[1000], outfile[1000];
 long long if_embed = 1, out_dim = -1, n_samples = -1, n_threads = -1, n_negative = -1, n_neighbors = -1, n_trees = -1, n_propagation = -1;
 int knn_trees = -1, epochs = -1;
 int mlevel = -1, L = -1, checkK = -1, knn_k = -1, S = -1,build_trees = -1;
-real alpha = -1, n_gamma = -1, perplexity = -1;
+float alpha = -1, n_gamma = -1, perplexity = -1;
+bool init_knn = true;
 
 int ArgPos(char *str, int argc, char **argv) {
 	int a;
@@ -28,10 +30,9 @@ int ArgPos(char *str, int argc, char **argv) {
 	return -1;
 }
 
-int main(int argc, char** argv){
-  //if(argc!=11){cout<< argv[0] << " data_file save_graph_file trees level epoch L K kNN S" <<endl; exit(-1);}
-	long long i, n_vertices, n_dim;
-	bool init_knn = true;
+void setParams(int argc, char ** argv) {
+	// 设置参数
+	//if(argc!=11){cout<< argv[0] << " data_file save_graph_file trees level epoch L K kNN S" <<endl; exit(-1);}
 	if ((i = ArgPos((char *) "-fea", argc, argv)) > 0) if_embed = atoi(argv[i + 1]);
 	if ((i = ArgPos((char *) "-input", argc, argv)) > 0) strcpy(infile, argv[i + 1]);
 	if ((i = ArgPos((char *) "-output", argc, argv)) > 0) strcpy(outfile, argv[i + 1]);
@@ -61,9 +62,14 @@ int main(int argc, char** argv){
 		else
 			init_knn = true;
 	}
+	n_neighbors = knn_k;
+}
 
-    n_neighbors = knn_k;
+int main(int argc, char** argv){
+	setParams(argc,argv);
 
+	LargeVis model;
+	data data_module;
 
 //	 strcpy(infile, "./data/twitter.200d.txt");
 //	 strcpy(outfile, "./data/twitter.2d.txt");
@@ -73,9 +79,6 @@ int main(int argc, char** argv){
 
 	strcpy(infile, "./data/mnist_vec784D.txt");
 	strcpy(outfile, "./data/mnist_vec2D_2.txt");
-
-	LargeVis model;
-	data data_module;
 
 	model.vec = data_module.load_from_file(infile);
 	model.n_vertices = data_module.get_vertice_number();

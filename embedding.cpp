@@ -1,7 +1,7 @@
-#ifndef DATA
-#define DATA
+#ifndef KNN
+#define KNN
 
-#include "data.h"
+#include "knn.h"
 #include <map>
 #include <float.h>
 #include <ctime>
@@ -57,9 +57,6 @@ long long data::get_vertice_number(){
 
 long long data::get_dim_number(){
     return n_dim;
-}
-real* data::getVec(){
-	return vec;
 }
 void data::show_data_info(){
     cout<<"[DATA] "<<"#vertices="<<n_vertices<<" "<<"#dim="<<n_dim<<endl;
