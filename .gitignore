@@ -25,4 +25,8 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
+# IDEA Config #
+###############
+.idea/
+cmake-build-debug/
 
