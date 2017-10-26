@@ -2,6 +2,7 @@
 #include <map>
 #include <float.h>
 #include <ctime>
+#include <time.h>
 #include <chrono>
 #include <iostream>
 #include <fstream>
@@ -561,10 +562,14 @@ void LargeVis::construt_knn(bool init_knn)
 		//generate knn graph
 		FIndex<float> index(dataset, new L2DistanceAVX<float>(), efanna::KDTreeUbIndexParams(true, knn_trees, mlevel, epochs, checkK, L, knn_k, build_trees, S));
 		clock_t s, f;
+        time_t time_s,time_e;
 		s = clock();//start time
+        time(&time_s);
 		index.buildIndex();
 		f = clock();//end time
-		cout << "Efanna KNN building time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+        time(&time_e);
+		cout<<"[kNN Graph]" << "Efanna kNN building CPU time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+        cout<< "[kNN Graph]" << "EFanna kNN building real time: " << difftime(time_e, time_s) << " seconds"<<endl;
 
 		knn_vec = new std::vector<int>[n_vertices];
 		index.getGraphResult(knn_vec);
