@@ -1,7 +1,6 @@
 #data#
 /data
 annoy_index_file
-Vis
 
 #compiled source #
 /CMakeFiles
@@ -14,6 +13,8 @@ Makefile
 *.exe
 *.o
 *.so
+Vis
+*.cbp
 
 # OS generated files #
 ######################
