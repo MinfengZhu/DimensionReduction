@@ -1,6 +1,7 @@
 #data#
 /data
 annoy_index_file
+Vis
 
 #compiled source #
 /CMakeFiles
@@ -25,4 +26,8 @@ Icon?
 ehthumbs.db
 Thumbs.db
 
+# IDEA Config #
+###############
+.idea/
+cmake-build-debug/
 
