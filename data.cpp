@@ -46,8 +46,11 @@ real* data::load_from_file(char *infile)
 			}
 		}
 	}
+//    cout << "[TEST PRE ] " << vec[176] << endl;
 	fclose(fin);
-    show_data_info();
+	show_data_info();
+	normalize();
+//    cout << "[TEST AFTER ] " << vec[176] << endl;
     return vec;
 }
 
@@ -64,4 +67,31 @@ real* data::getVec(){
 void data::show_data_info(){
     cout<<"[DATA] "<<"#vertices="<<n_vertices<<" "<<"#dim="<<n_dim<<endl;
 }
+
+void data::normalize() {
+	cout << "[DATA]" << "Normalizing ......" << endl;
+	real *mean = new real[n_dim];
+	for (long long i = 0; i < n_dim; ++i) mean[i] = 0;
+	for (long long i = 0, ll = 0; i < n_vertices; ++i, ll += n_dim)
+	{
+		for (long long j = 0; j < n_dim; ++j)
+			mean[j] += vec[ll + j];
+	}
+	for (long long j = 0; j < n_dim; ++j)
+		mean[j] /= n_vertices;
+	real mX = 0;
+	for (long long i = 0, ll = 0; i < n_vertices; ++i, ll += n_dim)
+	{
+		for (long long j = 0; j < n_dim; ++j)
+		{
+			vec[ll + j] -= mean[j];
+			if (fabs(vec[ll + j]) > mX)	mX = fabs(vec[ll + j]);
+		}
+	}
+	for (long long i = 0; i < n_vertices * n_dim; ++i)
+		vec[i] /= mX;
+	delete[] mean;
+	cout << "[DATA]" << " Done." << endl;
+} 
+
 #endif

@@ -15,6 +15,7 @@ class data{
 private:
 	real *vec;
 	long long n_vertices, n_dim;
+	void normalize();
 	void clean_data();
 public:
 	data();
@@ -22,7 +23,8 @@ public:
     long long get_vertice_number();
 	long long get_dim_number();
 	real* getVec();
-    void show_data_info();
+	void show_data_info();
+	
 };
 
 #endif

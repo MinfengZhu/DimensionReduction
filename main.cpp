@@ -31,6 +31,7 @@ int ArgPos(char *str, int argc, char **argv) {
 }
 
 void setParams(int argc, char ** argv) {
+	int i;
 	// 设置参数
 	//if(argc!=11){cout<< argv[0] << " data_file save_graph_file trees level epoch L K kNN S" <<endl; exit(-1);}
 	if ((i = ArgPos((char *) "-fea", argc, argv)) > 0) if_embed = atoi(argv[i + 1]);

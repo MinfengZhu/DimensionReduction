@@ -1,11 +1,14 @@
 #ifndef KNN_H
 #define KNN_H
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cmath>
 #include <vector>
+
+#include "ANNOY/annoylib.h"
+#include "ANNOY/kissrandom.h"
 
 using namespace std;
 
@@ -13,15 +16,16 @@ typedef float real;
 
 class knn{
 private:
-	void clean_data();
+
 public:
-	real *vec;
-	long long n_vertices, n_dim;
 	knn();
-	real* load_from_file(char *infile);
-    long long get_vertice_number();
-    long long get_dim_number();
-    void show_data_info();
+    void contruct_knn();
+    void knn_largevis();
+	void run_annoy();
+	void run_propagation();
+    void knn_efanna();
+    void test_accuracy();
+    void compute_similarity();
 };
 
 #endif
