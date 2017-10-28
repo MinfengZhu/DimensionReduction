@@ -92,6 +92,10 @@ void data::normalize() {
 		vec[i] /= mX;
 	delete[] mean;
 	cout << "[DATA]" << " Done." << endl;
-} 
+}
+
+vector<int> data::getKnnVec () {
+	return knn_vec;
+}
 
 #endif

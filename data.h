@@ -14,6 +14,7 @@ typedef float real;
 class data{
 private:
 	real *vec;
+	vector<int> *knn_vec;
 	long long n_vertices, n_dim;
 	void normalize();
 	void clean_data();
@@ -24,7 +25,7 @@ public:
 	long long get_dim_number();
 	real* getVec();
 	void show_data_info();
-	
+	vector<int>* getKnnVec();
 };
 
 #endif
