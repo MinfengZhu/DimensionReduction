@@ -76,7 +76,10 @@ int main(int argc, char** argv){
 //	strcpy(outfile, "./data/sift_base.2d.txt");
 
 	strcpy(infile, "./data/mnist_vec784D.txt");
-	strcpy(outfile, "./data/mnist_vec2D_2.txt");
+	strcpy(outfile, "./plot/mnist_vec2D.txt");
+    char knnfile[1000];
+    strcpy(knnfile, "./plot/knn.txt");
+
 
 //	model.vec = data_module.load_from_file(infile);
 //	model.n_vertices = data_module.get_vertice_number();
@@ -87,6 +90,7 @@ int main(int argc, char** argv){
     knn_module.setParams(data_module, n_trees, n_neighbors, n_threads, n_propagation, knn_trees,
                          mlevel, epochs, L, checkK, knn_k, S, build_trees, knn_type);
     knn_module.construct_knn();
+    knn_module.save_knn(knnfile);
 
     embedding_module.load_knn(data_module, perplexity, n_threads, out_dim, alpha, n_samples, n_negative, n_gamma);
     embedding_module.visualize();

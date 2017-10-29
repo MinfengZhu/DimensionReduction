@@ -10,6 +10,7 @@
 #include <fstream>
 #include <malloc.h>
 #include <string>
+#include <stdio.h>
 
 knn::knn () {
 }
@@ -241,4 +242,30 @@ void knn::test_accuracy()
     printf("[kNN Graph] Test efanna knn accuracy(use largevis test) : %.2f%%\n", hit_case * 100.0 / (test_case * n_neighbors));
 }
 
+void knn::save_knn(char* outfile){
+    ofstream myfile;
+    myfile.open (outfile);
+    //FILE *fout = fopen(outfile, "wb");
+    //fprintf(fout, "%lld %lld\n", n_vertices, out_dim);
+    if(myfile.is_open()){
+
+
+    for (int i = 0; i < n_vertices; ++i){
+        for(int j=0; j < knn_vec[i].size(); j++){
+            //if (j) fprintf(fout, " ");
+            //std::print(fout,"%d", knn_vec[i][j]);
+            if(j) myfile<< " ";
+            myfile<< knn_vec[i][j];
+        }
+        myfile<<"\n";
+        //fprintf(fout, "\n");
+    }
+    myfile<< flush;
+    myfile.close();
+    //fclose(fout);
+
+    }
+    else
+        cout<< "unable to write file"<<endl;
+}
 #endif

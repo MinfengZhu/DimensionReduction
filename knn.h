@@ -7,6 +7,8 @@
 #include <math.h>
 #include <vector>
 #include "./data.h"
+#include <iostream>
+#include <fstream>
 
 #include "ANNOY/annoylib.h"
 #include "ANNOY/kissrandom.h"
@@ -55,6 +57,7 @@ public:
 	void setParams(data& d, long long n_tree, long long n_neig, long long n_thre, long long n_prop,
                    int knn_tre, int epo, int mle, int l, int che, int k, int s, int build_tre, string knn_tp);
     vector<int>* construct_knn();
+    void save_knn(char* outfile);
 };
 
 #endif

@@ -24,10 +24,8 @@ void embedding::compute_similarity()
     long long i, x, y, p, q;
     real sum_weight = 0;
     for (i = 0; i < n_vertices; ++i) head[i] = -1;
-    cout << knn_vec[0][0] << endl;
     for (x = 0; x < n_vertices; ++x)
     {
-        cout << "x = " << x << endl;
         for (i = 0; i < knn_vec[x].size(); ++i)
         {
             edge_from.push_back((int)x);
@@ -258,7 +256,7 @@ void embedding::visualize_thread(int id)
 			last_edge_count = edge_count;
 			cur_alpha = initial_alpha * (1 - edge_count_actual / (n_samples + 1.0));
 			if (cur_alpha < initial_alpha * 0.0001) cur_alpha = initial_alpha * 0.0001;
-			printf("[EMBEDDING] %cFitting model\tAlpha: %f Progress: %.3lf%%", 13, cur_alpha, (real)edge_count_actual / (real)(n_samples + 1) * 100);
+			printf("%c[EMBEDDING] Fitting model\tAlpha: %f Progress: %.3lf%%", 13, cur_alpha, (real)edge_count_actual / (real)(n_samples + 1) * 100);
 			fflush(stdout);
 		}
 		p = sample_an_edge(gsl_rng_uniform(gsl_r), gsl_rng_uniform(gsl_r));
