@@ -42,7 +42,7 @@ public:
 	KDTreeUbIndex(const Matrix<DataType>& dataset, const Distance<DataType>* d, const IndexParams& params = KDTreeUbIndexParams(true,4)) :
 		BaseClass(dataset,d,params)
 	{
-		std::cout<<"kdtree ub initial"<<std::endl;
+		std::cout<< "[kNN Graph] " <<"kdtree ub initial"<<std::endl;
 		ExtraParamsMap::const_iterator it = params_.extra_params.find("trees");
 		if(it != params_.extra_params.end()){
 			TreeNum = (it->second).int_val;
@@ -100,13 +100,13 @@ public:
 		f = clock();
 #endif
 
-		std::cout << "initial graph finised"<< std::endl;
+		std::cout << "[kNN Graph] " << "initial graph finised"<< std::endl;
 #ifdef INFO
 		std::cout << "initial graph using time: "<< (f-s)*1.0/CLOCKS_PER_SEC<<" seconds"<< std::endl;
 #endif
 
 		if(error_flag){
-			std::cout << "merge level deeper than tree, max merge deepth is" << max_deepth-1<<std::endl;
+			std::cout << "[kNN Graph] " << "merge level deeper than tree, max merge deepth is" << max_deepth-1<<std::endl;
 			return;
 		}
 		refineGraph();

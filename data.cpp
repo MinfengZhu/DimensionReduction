@@ -37,6 +37,7 @@ real* data::load_from_file(char *infile)
 		return 0;
 	}
 	vec = new float[n_vertices * n_dim];
+    knn_vec = new vector<int>[n_vertices];
 	for (long long i = 0; i < n_vertices; ++i){
 		for (long long j = 0; j < n_dim; ++j){
             auto ret = fscanf(fin, "%f", &vec[i * n_dim + j]);
@@ -69,7 +70,7 @@ void data::show_data_info(){
 }
 
 void data::normalize() {
-	cout << "[DATA]" << "Normalizing ......" << endl;
+	cout << "[DATA] " << "Normalizing ......";
 	real *mean = new real[n_dim];
 	for (long long i = 0; i < n_dim; ++i) mean[i] = 0;
 	for (long long i = 0, ll = 0; i < n_vertices; ++i, ll += n_dim)
@@ -91,10 +92,10 @@ void data::normalize() {
 	for (long long i = 0; i < n_vertices * n_dim; ++i)
 		vec[i] /= mX;
 	delete[] mean;
-	cout << "[DATA]" << " Done." << endl;
+	cout << " Done." << endl;
 }
 
-vector<int> data::getKnnVec () {
+vector<int>* data::getKnnVec () {
 	return knn_vec;
 }
 

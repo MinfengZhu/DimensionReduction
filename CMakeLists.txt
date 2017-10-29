@@ -21,7 +21,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 
 
 ###############################################################################
-add_executable(Vis main.cpp LargeVis.cpp)
+add_executable(Vis main.cpp knn.cpp embedding.cpp)
 target_link_libraries(Vis pthread gsl gslcblas ${Boost_LIBRARIES})
 ###############################################################################
 #
