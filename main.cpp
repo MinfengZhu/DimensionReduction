@@ -1,20 +1,23 @@
-#include "efanna.hpp"
 #include "data.cpp"
 #include <iostream>
 #include <fstream>
 #include <ctime>
 #include <malloc.h>
-#include "LargeVis.h"
+//#include "LargeVis.h"
 #include "data.h"
+#include "knn.h"
+#include "embedding.h"
 
-using namespace efanna;
 using namespace std;
 
+float *vec;
 char infile[1000], outfile[1000];
+string knn_type; // "largevis" or "efanna"
 long long if_embed = 1, out_dim = -1, n_samples = -1, n_threads = -1, n_negative = -1, n_neighbors = -1, n_trees = -1, n_propagation = -1;
 int knn_trees = -1, epochs = -1;
 int mlevel = -1, L = -1, checkK = -1, knn_k = -1, S = -1,build_trees = -1;
-real alpha = -1, n_gamma = -1, perplexity = -1;
+float alpha = -1, n_gamma = -1, perplexity = -1;
+bool init_knn = true;
 
 int ArgPos(char *str, int argc, char **argv) {
 	int a;
@@ -28,10 +31,10 @@ int ArgPos(char *str, int argc, char **argv) {
 	return -1;
 }
 
-int main(int argc, char** argv){
-  //if(argc!=11){cout<< argv[0] << " data_file save_graph_file trees level epoch L K kNN S" <<endl; exit(-1);}
-	long long i, n_vertices, n_dim;
-	bool init_knn = true;
+void setParams(int argc, char ** argv) {
+	int i;
+	// 设置参数
+	//if(argc!=11){cout<< argv[0] << " data_file save_graph_file trees level epoch L K kNN S" <<endl; exit(-1);}
 	if ((i = ArgPos((char *) "-fea", argc, argv)) > 0) if_embed = atoi(argv[i + 1]);
 	if ((i = ArgPos((char *) "-input", argc, argv)) > 0) strcpy(infile, argv[i + 1]);
 	if ((i = ArgPos((char *) "-output", argc, argv)) > 0) strcpy(outfile, argv[i + 1]);
@@ -54,16 +57,17 @@ int main(int argc, char** argv){
 	if ((i = ArgPos((char *) "-knn_k", argc, argv)) > 0) knn_k = atoi(argv[i + 1]);
 	if ((i = ArgPos((char *) "-S", argc, argv)) > 0) S = atoi(argv[i + 1]);
 	if ((i = ArgPos((char *) "-build_trees", argc, argv)) > 0) build_trees = atoi(argv[i + 1]);
-	if ((i = ArgPos((char *)"-init_knn", argc, argv)) > 0)
-	{
-		if(atoi(argv[i + 1]) == 0)
-			init_knn = false;
-		else
-			init_knn = true;
-	}
+	if ((i = ArgPos((char *) "-knn_type", argc, argv)) > 0) knn_type = argv[i + 1];
 
-    n_neighbors = knn_k;
+	n_neighbors = knn_k;
+}
 
+int main(int argc, char** argv){
+	setParams(argc,argv);
+
+	data data_module;
+    knn knn_module;
+    embedding embedding_module;
 
 //	 strcpy(infile, "./data/twitter.200d.txt");
 //	 strcpy(outfile, "./data/twitter.2d.txt");
@@ -74,18 +78,24 @@ int main(int argc, char** argv){
 	strcpy(infile, "./data/mnist_vec784D.txt");
 	strcpy(outfile, "./data/mnist_vec2D_2.txt");
 
-	LargeVis model;
-	data data_module;
+//	model.vec = data_module.load_from_file(infile);
+//	model.n_vertices = data_module.get_vertice_number();
+//	model.n_dim = data_module.get_dim_number();
 
-	model.vec = data_module.load_from_file(infile);
-	model.n_vertices = data_module.get_vertice_number();
-	model.n_dim = data_module.get_dim_number();
+    data_module.load_from_file(infile);
 
+    knn_module.setParams(data_module, n_trees, n_neighbors, n_threads, n_propagation, knn_trees,
+                         mlevel, epochs, L, checkK, knn_k, S, build_trees, knn_type);
+    knn_module.construct_knn();
+
+    embedding_module.load_knn(data_module, perplexity, n_threads, out_dim, alpha, n_samples, n_negative, n_gamma);
+    embedding_module.visualize();
+    embedding_module.save(outfile);
 	// cout << model.vec[100] << endl << model.n_dim << endl << model.n_vertices << endl;
 
-	model.run(out_dim, n_threads, n_samples, n_propagation, alpha, n_trees, n_negative, n_neighbors, n_gamma,
-			  perplexity, knn_trees, mlevel, epochs, L, checkK, knn_k, S, build_trees, init_knn);//n_neighbors
-	model.save(outfile);
+//	model.run(out_dim, n_threads, n_samples, n_propagation, alpha, n_trees, n_negative, n_neighbors, n_gamma,
+//			  perplexity, knn_trees, mlevel, epochs, L, checkK, knn_k, S, build_trees, init_knn);//n_neighbors
+//	model.save(outfile);
 
 	return 0;
 }

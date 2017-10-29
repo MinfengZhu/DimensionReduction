@@ -13,15 +13,19 @@ typedef float real;
 
 class data{
 private:
+	real *vec;
+	vector<int> *knn_vec;
+	long long n_vertices, n_dim;
+	void normalize();
 	void clean_data();
 public:
-	real *vec;
-	long long n_vertices, n_dim;
 	data();
 	real* load_from_file(char *infile);
     long long get_vertice_number();
-    long long get_dim_number();
-    void show_data_info();
+	long long get_dim_number();
+	real* getVec();
+	void show_data_info();
+	vector<int>* getKnnVec();
 };
 
 #endif

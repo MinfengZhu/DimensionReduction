@@ -453,7 +453,7 @@ SearchParams SP;
       }
     }
     void refineGraph(){
-      std::cout << " refineGraph" << std::endl;
+      std::cout << "[kNN Graph] " << "refineGraph" << std::endl;
       int iter = 0;
       clock_t s,f;
       s = clock();unsigned int l=100;
@@ -461,10 +461,10 @@ SearchParams SP;
         join();//std::cout<<"after join"<<std::endl;
         update(l);
         f = clock();
-        std::cout << "iteration "<< iter << " time: "<< (f-s)*1.0/CLOCKS_PER_SEC<<" seconds"<< std::endl;
+        std::cout << "[kNN Graph] " << "iteration "<< iter << " time: "<< (f-s)*1.0/CLOCKS_PER_SEC<<" seconds"<< std::endl;
       }
       //calculate_norm();
-std::cout << "saving graph" << std::endl;
+std::cout << "[kNN Graph] " << "saving graph" << std::endl;
   /*    knn_graph.clear();
 	
       for(size_t i = 0; i < nhoods.size(); i++){

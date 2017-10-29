@@ -1,10 +1,10 @@
 // Copyright (C) 2016 Cong Fu <731097343@qq.com>. All Rights Reserved.
 #ifndef EFANNA
 #define EFANNA
-#include "general/distance.hpp"
-#include "general/matrix.hpp"
-#include "general/params.hpp"
-#include "algorithm/init_indices.hpp"
+#include "../general/distance.hpp"
+#include "../general/matrix.hpp"
+#include "../general/params.hpp"
+#include "init_indices.hpp"
 namespace efanna{
 template <typename DataType>
 class FIndex{
