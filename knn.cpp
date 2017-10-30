@@ -245,27 +245,17 @@ void knn::test_accuracy()
 void knn::save_knn(char* outfile){
     ofstream myfile;
     myfile.open (outfile);
-    //FILE *fout = fopen(outfile, "wb");
-    //fprintf(fout, "%lld %lld\n", n_vertices, out_dim);
     if(myfile.is_open()){
-
-
-    for (int i = 0; i < n_vertices; ++i){
-        for(int j=0; j < knn_vec[i].size(); j++){
-            //if (j) fprintf(fout, " ");
-            //std::print(fout,"%d", knn_vec[i][j]);
-            if(j) myfile<< " ";
-            myfile<< knn_vec[i][j];
+        for (int i = 0; i < n_vertices; ++i){
+            for(int j=0; j < knn_vec[i].size(); j++){
+                if(j) myfile<< " ";
+            }
+            myfile<<"\n";
         }
-        myfile<<"\n";
-        //fprintf(fout, "\n");
-    }
-    myfile<< flush;
-    myfile.close();
-    //fclose(fout);
-
-    }
-    else
+        myfile<< flush;
+        myfile.close();
+    }else
         cout<< "unable to write file"<<endl;
 }
+
 #endif
