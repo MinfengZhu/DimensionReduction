@@ -63,15 +63,22 @@ vector<int>* knn::construct_knn () {
     if (knn_type.empty()) {
         cout << "[kNN Graph] " << "no specified the type of constructing knn." << endl;
     } else {
+        clock_t s, f;
+        time_t time_s,time_e;
+
         if (knn_type == "largevis") {
+            s = clock();//start time
+            time(&time_s);
             run_annoy();
             run_propagation();
+            f = clock();//end time
+            time(&time_e);
+            cout<<"[kNN Graph] " << "Largevis kNN building CPU time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+            cout<< "[kNN Graph] " << "Largevis kNN building real time: " << difftime(time_e, time_s) << " seconds"<<endl;
         }else if (knn_type == "efanna") {
             Matrix<float> dataset(n_vertices, n_dim, vec);
             //generate knn graph
             FIndex<float> index(dataset, new L2DistanceAVX<float>(), efanna::KDTreeUbIndexParams(true, knn_trees, mlevel, epochs, checkK, L, knn_k, build_trees, S));
-            clock_t s, f;
-            time_t time_s,time_e;
             s = clock();//start time
             time(&time_s);
             index.buildIndex();

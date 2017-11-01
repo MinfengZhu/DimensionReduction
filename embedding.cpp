@@ -339,6 +339,11 @@ void embedding::load_knn(data &d, real perp, long long n_thre, long long out_d, 
 
 void embedding::visualize()
 {
+    clock_t s, f;
+    time_t time_s,time_e;
+    s = clock();//start time
+    time(&time_s);
+
     compute_similarity();
 	long long i;
 	//init projection coordinate
@@ -351,7 +356,11 @@ void embedding::visualize()
 	for (int j = 0; j < n_threads; ++j) pthread_create(&pt[j], NULL, embedding::visualize_thread_caller, new arg_embedding(this, j));
 	for (int j = 0; j < n_threads; ++j) pthread_join(pt[j], NULL);
 	delete[] pt;
-	printf("\n");
+
+    f = clock();//end time
+    time(&time_e);
+    cout<<"[EMBEDDING] " << "kNN embedding CPU time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
+    cout<< "[EMBEDDING] " << "kNN embedding real time: " << difftime(time_e, time_s) << " seconds"<<endl;
 }
 
 void embedding::save(char *outfile)
