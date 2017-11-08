@@ -300,7 +300,6 @@ void *embedding::visualize_thread_caller(void *arg)
 	embedding *ptr = (embedding*)(((arg_embedding*)arg)->ptr);
 	ptr->visualize_thread(((arg_embedding*)arg)->id);
 	pthread_exit(NULL);
-    cout<<""<<endl;
 }
 
 void embedding::load_knn(data &d, real perp, long long n_thre, long long out_d, real alph, long long n_samp, long long n_nega, real gamm) {
@@ -360,6 +359,7 @@ void embedding::visualize()
 
     f = clock();//end time
     time(&time_e);
+    printf("\n");
     cout<<"[EMBEDDING] " << "kNN embedding CPU time : " << (f - s) * 1.0 / CLOCKS_PER_SEC << " seconds" << endl;
     cout<< "[EMBEDDING] " << "kNN embedding real time: " << difftime(time_e, time_s) << " seconds"<<endl;
 }
