@@ -95,11 +95,6 @@ int main(int argc, char** argv){
     embedding_module.load_knn(data_module, perplexity, n_threads, out_dim, alpha, n_samples, n_negative, n_gamma);
     embedding_module.visualize();
     embedding_module.save(outfile);
-	// cout << model.vec[100] << endl << model.n_dim << endl << model.n_vertices << endl;
 
-//	model.run(out_dim, n_threads, n_samples, n_propagation, alpha, n_trees, n_negative, n_neighbors, n_gamma,
-//			  perplexity, knn_trees, mlevel, epochs, L, checkK, knn_k, S, build_trees, init_knn);//n_neighbors
-//	model.save(outfile);
-
-	return 0;
+    return 0;
 }

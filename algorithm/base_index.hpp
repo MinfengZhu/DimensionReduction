@@ -140,7 +140,7 @@ namespace efanna{
        }
     }
 	void getGraphResult(std::vector<int>* knn_vec){
-		std::cout<<"[getGraphResult]"<<" #vec="<<gs.size()<<" "<< "#k_knn="<<gs[0].size()<<std::endl;
+		std::cout<<"[kNN Graph]"<<" #vec="<<gs.size()<<" "<< "#k_knn="<<gs[0].size()<<std::endl;
 		unsigned N =gs.size();
 		for(unsigned i=0; i < N; i++){
 			unsigned k = gs[i].size();
@@ -466,13 +466,13 @@ SearchParams SP;
       //calculate_norm();
 std::cout << "[kNN Graph] " << "saving graph" << std::endl;
   /*    knn_graph.clear();
-	
+
       for(size_t i = 0; i < nhoods.size(); i++){
         CandidateHeap can;
         for(size_t j = 0; j < params_.K; j++){
           Candidate<DataType> c(nhoods[i].pool[j].id,nhoods[i].pool[j].dist);
           can.insert(c);
-	  
+
         }
         while(can.size()<params_.K){
           unsigned id = rand() % nhoods.size();
@@ -494,9 +494,9 @@ std::cout << "[kNN Graph] " << "saving graph" << std::endl;
 	    for(unsigned j = 0; j < params_.K;j++)
 		gs[i][j] = g[i][j].id;
 	}
-		
+
     }
-    
+
     void calculate_norm(){
 	unsigned N = features_.get_rows();
 	unsigned D = features_.get_cols();

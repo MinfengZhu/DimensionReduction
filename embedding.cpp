@@ -300,6 +300,7 @@ void *embedding::visualize_thread_caller(void *arg)
 	embedding *ptr = (embedding*)(((arg_embedding*)arg)->ptr);
 	ptr->visualize_thread(((arg_embedding*)arg)->id);
 	pthread_exit(NULL);
+    cout<<""<<endl;
 }
 
 void embedding::load_knn(data &d, real perp, long long n_thre, long long out_d, real alph, long long n_samp, long long n_nega, real gamm) {
